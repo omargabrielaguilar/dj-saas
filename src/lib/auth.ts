@@ -1,4 +1,4 @@
-import { DefaultSession, NextAuthOptions } from "next-auth";
+import { DefaultSession, NextAuthOptions, getServerSession } from "next-auth";
 import { prisma } from "./db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
@@ -30,7 +30,6 @@ export const authOptions: NextAuthOptions = {
           email: token.email,
         },
       });
-
       if (db_user) {
         token.id = db_user.id;
         token.credits = db_user.credits;
@@ -57,3 +56,9 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 };
+
+export const getAuthSession = () => {
+  return getServerSession(authOptions);
+};
+
+
