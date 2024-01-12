@@ -1,12 +1,14 @@
 import { DefaultSession, NextAuthOptions } from "next-auth";
 import { prisma } from "./db";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import GoogleProvider from "next-auth/providers/google";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
       credits: number;
-    } & DefaultSession['user']
+    } & DefaultSession["user"];
   }
 }
 
@@ -46,4 +48,12 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  secret: process.env.NEXTAUTH_SECRET as string,
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+  ],
 };
